@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ondemand cashapp automation" default="install" basedir=".">
+	
+	<!-- =======time stamp property==================-->
+	<tstamp>
+	      <format property="TIMESTAMP" pattern="yyyyMMdd-HHmmss"/>
+	</tstamp>
+
+	<!-- ========Initialize properties========	-->
+	<property name="testxml" value="default"/>
+	<property name="build.dir" location="${basedir}/build/${testxml}${TIMESTAMP}"/>
+ 	<property name="lib.dir" location="${basedir}/lib"/>
+ 	<property name="src.dir" location="${basedir}/src"/>
+
+	<!-- =======set class path and store in test.classpath property============  -->
+	<target name="setClassPath">
+		<echo message="setting classpath of jars"/>
+		<path id="classpath_jars">
+			<pathelement path="${basedir}/"/>
+			<fileset dir="${lib.dir}" includes="*.jar"/>		
+		</path>
+		<pathconvert pathsep=":" property="test.classpath" refid="classpath_jars"/>		
+	</target>	
+	
+	<!-- =========load TestNG============= -->
+	<target name="loadTestNG" depends="setClassPath">
+		<!-- task definition of testNG -->
+		<echo message="loading testNG"/>
+		<taskdef resource="testngtasks" classpath="${test.classpath}"/>
+	</target>
+	
+	<!-- =========Initiate build========== -->
+	<target name="init">
+		<echo message="creating new build directory"/>
+		<mkdir dir="${build.dir}"/>
+	</target>
+	
+	<!-- =========Cleaning existing build directory============ -->
+	<target name="clean">
+		<echo message="cleaning existing build directory"/>
+		<delete dir="${basedir}/build"/>
+	</target>
+	
+	<!-- ==========Compiling==================== -->
+	<target name="compile" depends="init,setClassPath,loadTestNG">
+		<echo message="classpath: ${test.classpath}"/>
+		<echo message="compiling..."/>
+		<javac srcdir="${src.dir}" destdir="${build.dir}" classpath="${test.classpath}"/>
+	</target>
+	
+	<!-- ===========Installing=================== -->
+	<target name="install" depends="compile">
+		<!-- <echo message="calling xml file"/>-->
+		<testng outputdir="${build.dir}" classpath="${test.classpath}:${build.dir}"> 
+         <xmlfileset dir="${src.dir}" includes="${testxml}.xml"/> 
+    	</testng>
+	</target>
+</project>
