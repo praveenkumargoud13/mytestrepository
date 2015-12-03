@@ -1,0 +1,7 @@
+<suite name="cashapp suite">
+	<test name="time delay check for cashapp login">
+		<classes>
+			<class name="antbuild.wd_script"/>
+		</classes>
+	</test>
+</suite>

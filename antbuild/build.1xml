@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TestNGTest" default="test" basedir=".">
+
+   <!-- Define <testng> task -->
+
+   <taskdef name="testng" classname="org.testng.TestNGAntTask">
+      <classpath>
+         <pathelement location="lib/testng.jar"/>
+      	 <pathelement location="lib/jcommander.jar"/>
+      	 <pathelement location="lib/selenium-java-2.48.2.jar"/>
+      	 <pathelement location="lib/selenium-server-standalone-2.48.2.jar"/>
+      </classpath>
+   </taskdef>
+	
+	<!--<taskdef resource="testngtasks" classpath="testng.jar"/>-->
+
+   <property name="testdir" location="test" />
+   <property name="srcdir" location="src" />
+   <property name="libdir" location="lib" />
+   <property name="full-compile" value="false" />
+   
+   <path id="classpath.base"/>
+   <path id="classpath.test">
+   
+   <fileset dir="${libdir}">
+      <include name="**/*.jar" />
+   </fileset>
+   
+   <pathelement location="${testdir}" />
+   <pathelement location="${srcdir}" />
+   
+   <path refid="classpath.base" />
+   </path>
+   
+   <target name="clean" >
+      <delete verbose="${full-compile}">
+         <fileset dir="${testdir}" includes="**/*.class" />
+      </delete>
+   </target>
+   
+   <target name="compile" depends="clean">
+      <javac srcdir="${srcdir}" destdir="${testdir}" verbose="${full-compile}">
+         <classpath refid="classpath.test"/>
+      </javac>
+   </target>
+   
+	<target name="test" depends="compile">
+      <testng outputdir="${testdir}" classpathref="classpath.test"> 
+         <xmlfileset dir="${srcdir}" includes="tn.xml"/> 
+    </testng>
+   </target>   
+</project>
